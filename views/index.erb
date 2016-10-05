@@ -3,6 +3,8 @@
 		<style>
 			body {
 				background: <%= background_color %>;
+				text-align: center;
+				padding: 250px; 
 			}
 		</style>
 	</head>
@@ -14,8 +16,10 @@
 			</form>
 		</p>
 		<p>
-			<%= number %>
-		</p>
+			<%= if cheat_mode == "true"
+							"Cheat MOde Engaged!:  #{number}"
+					end %>
+		</p>		
 		<p>
 			<%= guesses %> Guesses Left
 		</p>		

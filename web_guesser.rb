@@ -1,33 +1,38 @@
 require 'sinatra'
 require 'sinatra/reloader'
 
+
+#A random amount of guesses allowed is generated each time.
+#I wanted to make it feel a bit like a casino game.
+
 @@number = rand(100)
 @@correct = false
-@@guesses = 8
+@@guesses = rand(8) + 1
 
 get '/' do
 	guess = params["guess"].to_i
+	cheat_mode = params["cheat"]
 	message, background_color = guess_check(guess, @@number)
 	guess_status = track_guesses
 
-	erb :index, :locals => {:number => @@number, :message => message, :background_color => background_color, :guess_status => guess_status, :guesses => @@guesses}
+	erb :index, :locals => {:number => @@number, :message => message, :background_color => background_color, :guess_status => guess_status, :guesses => @@guesses, :cheat_mode => cheat_mode}
 end
 
 
 def track_guesses
 	if @@correct == true
 		@@number = rand(100)
-		reset_guesses
+		@@guesses = rand(8) + 1
 		@@correct = false
-		"You are a master guesser! <br><br> Starting New Game."
-	elsif @@correct ==  false && @@guesses > 0
+		"You are a master guesser! <br><br> Starting New Game - <br>Generating new number and amount of guesses."
+	elsif @@correct ==  false && @@guesses > 1
 		@@guesses -= 1
 		""
-	elsif @@correct == false && @@guesses <= 0
+	elsif @@correct == false && @@guesses <= 1
 		@@number = rand(100)
-		reset_guesses
+		@@guesses = rand(8) + 1
 		@@correct = false
-		"You lost the game. <br><br> Starting New Game."
+		"You lost. <br><br> Starting New Game - <br>Generating new number and amount of guesses."
 	end
 end
 
