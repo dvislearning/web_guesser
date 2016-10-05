@@ -1,0 +1,23 @@
+[33mcommit e1b8646ca9428da9aac273f6ad6575230aa76d6d[m
+Author: DV <dvislearning@gmail.com>
+Date:   Tue Oct 4 01:49:49 2016 -0700
+
+    I3: number guesses game complete
+
+[33mcommit 823599b3e0437a349ae27a97358cd5e353db477f[m
+Author: DV <dvislearning@gmail.com>
+Date:   Fri Sep 30 14:47:14 2016 -0700
+
+    I2: uses an ERB template and HTML
+
+[33mcommit 58984126e2dcc269a953c8641e2b093c1964a7ad[m
+Author: DV <dvislearning@gmail.com>
+Date:   Fri Sep 30 13:00:32 2016 -0700
+
+    I1: generates a random number
+
+[33mcommit af0674fca4883d5fec249e3a63bc82d4f3392ec5[m
+Author: DV <dvislearning@gmail.com>
+Date:   Fri Sep 30 12:29:48 2016 -0700
+
+    IO: first sinatra server

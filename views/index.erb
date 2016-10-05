@@ -14,14 +14,16 @@
 			</form>
 		</p>
 		<p>
-			<%= if background_color == "green"
-						"The SECRET NUMBER is: #{number}" 
-					end %>
+			<%= number %>
 		</p>
+		<p>
+			<%= guesses %> Guesses Left
+		</p>		
 		<p>
 			<%= message %>
 		</p>
+		<p>
+			<%= guess_status %>
+		</p>		
 	</body>
 </html>
-
-
