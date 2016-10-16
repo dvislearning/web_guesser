@@ -1,60 +1,73 @@
 require 'sinatra'
 require 'sinatra/reloader'
 
+enable :sessions
+
 
 #A random amount of guesses allowed is generated each time.
 #I wanted to make it feel a bit like a casino game.
 
-@@number = rand(100)
-@@correct = false
-@@guesses = rand(8) + 1
+
 
 get '/' do
-	guess = params["guess"].to_i
-	cheat_mode = params["cheat"]
-	message, background_color = guess_check(guess, @@number)
-	guess_status = track_guesses
+	new_game if session[:number].nil?
+	session[:cheat] =  params["cheat"]
 
-	erb :index, :locals => {:number => @@number, :message => message, :background_color => background_color, :guess_status => guess_status, :guesses => @@guesses, :cheat_mode => cheat_mode}
+	erb :index
 end
 
 
-def track_guesses
-	if @@correct == true
-		@@number = rand(100)
-		@@guesses = rand(8) + 1
-		@@correct = false
-		"You are a master guesser! <br><br> Starting New Game - <br>Generating new number and amount of guesses."
-	elsif @@correct ==  false && @@guesses > 1
-		@@guesses -= 1
-		""
-	elsif @@correct == false && @@guesses <= 1
-		@@number = rand(100)
-		@@guesses = rand(8) + 1
-		@@correct = false
-		"You lost. <br><br> Starting New Game - <br>Generating new number and amount of guesses."
+post '/process' do
+	session[:correct] = false
+	session[:end_game_message] = nil
+	@guess = params["guess"] =~ /\d+/ ? params["guess"].to_i : params["guess"]
+
+	guess_check
+	track_guesses
+
+
+	redirect to ('/')
+end
+
+
+helpers do
+	def new_game
+		session[:number] = rand(99) + 1
+		session[:guesses] = rand(3..8)
+	end
+
+	def track_guesses
+		if session[:correct] == true
+			session[:end_game_message] = "You are a master guesser! <br><br> Starting New Game <br>Generating new number and amount of guesses."
+			new_game
+		elsif session[:correct] ==  false && session[:guesses] > 1
+			session[:guesses] -= 1
+		elsif session[:correct] == false && session[:guesses] <= 1
+			session[:end_game_message] = "You lost. <br><br> Starting New Game - Generating new number and amount of guesses."
+			new_game
+		end
+	end
+
+	def guess_check
+		if !((0...100) === @guess)
+			session[:message] = "Please select a number between 1 and 99"
+			session[:bg_color] = "grey" 
+		elsif @guess > session[:number] + 10
+			session[:message] = "Your guess is WAY too high."
+			session[:bg_color] = "red"			
+		elsif @guess > session[:number] && @guess <= session[:number] + 10
+			session[:message] = "Your guess is too high."
+			session[:bg_color] = "#ff3232"			
+		elsif @guess < session[:number] - 10
+			session[:message] = "Your guess is WAY too low."
+			session[:bg_color] = "red"			
+		elsif @guess < session[:number] && @guess >= session[:number] - 10
+			session[:message] = "Your guess is too low."
+			session[:bg_color] = "#ff3232"				
+		elsif @guess ==  session[:number]
+			session[:correct] = true
+			session[:message] = "Your guess is correct! <br> The number was #{session[:number]}"
+			session[:bg_color] = "green"			
+		end
 	end
 end
-
-def guess_check(guess, number)
-	return ["", "white"] if guess == 0
-	if !((0...100) === guess)
-		["Please select a number between 1 and 99", "grey"]
-	elsif guess > number + 10
-		["Your guess is WAY too high.", "red"]
-	elsif guess > number && guess <= number + 10
-		["Your number is too high", "#ff3232"]
-	elsif guess < number - 10
-		["Your guess is WAY too low.", "red"]
-	elsif guess < number && guess >= number - 10
-		["Your guess is too low.", "#ff3232"]
-	elsif guess ==  number
-		@@correct = true
-		["Your guess is correct! <br> The number was #{number}", "green"]
-	end
-end
-
-
-
-#Sinatra/reloader gem allows you to reload your page with changes without
-#having to reload the server.

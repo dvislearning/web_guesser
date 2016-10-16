@@ -2,32 +2,35 @@
 	<head>
 		<style>
 			body {
-				background: <%= background_color %>;
+				background: <%= session[:bg_color] %>;
 				text-align: center;
-				padding: 250px; 
+				padding: 60px; 
 			}
 		</style>
 	</head>
 	<body>
+        <p style="font-size:45px">
+            My 'Lil Web Guesser
+        </p>
 		<p>
-			<form>
+			<form method='POST' action="/process" >
 				<input type='text' name='guess' />
 				<input type='submit' value='Guess!' />
 			</form>
 		</p>
 		<p>
-			<%= if cheat_mode == "true"
-							"Cheat MOde Engaged!:  #{number}"
-					end %>
+			<% if session[:cheat] == "true" %>
+				Cheat MOde Engaged: <br>Secret Number is: <%= session[:number] %>
+			<% end %> 
 		</p>		
 		<p>
-			<%= guesses %> Guesses Left
+			<%= session[:guesses] %> Guesses Left
 		</p>		
 		<p>
-			<%= message %>
+			<%= session[:message] %>
 		</p>
 		<p>
-			<%= guess_status %>
-		</p>		
+			<%= session[:end_game_message] %>
+		</p>						
 	</body>
 </html>
